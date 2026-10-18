@@ -1,34 +1,81 @@
-# IBM Data Science Capstone Project
+# IBM Data Science Professional Certificate - Capstone Project
+## Project Overview
+SpaceX advertises Falcon 9 rocket launches at a cost of $74 million, with much of this cost savings attributed to SpaceX's ability to reuse the first stage of the rocket.
 
-## Introduction
+The objective of this project is to predict whether the Falcon 9 first stage will land successfully. By accurately predicting landing outcomes, we can estimate the true cost of a launch, providing valuable intelligence for alternative companies bidding against SpaceX.
 
-This repository contains all of the Jupyter Notebooks and other relevant files/media required to complete this course. I applied skills taught in the IBM Data Science MOOC to a simulated scenario using real data. The scenario provided SpaceX data to predict whether the company will successfully land a Falcon 9 rocket. The goal of this project is to predict the outcomes of the Falcon 9 first-stage landing process, but to find the answer to this goal, we have to ask the following questions:
+## Business Problem
+If we can determine if the first stage will land, we can determine the cost of a launch. This information can be used to provide reliable cost estimates for potential clients, improving financial planning and bid pricing.
 
-1. Which factors influence landing success?
-2. Which launch sites and orbits perform best?
-3. Can machine learning accurately predict landing success?
+## Tech Stack & Tools
+* Languages: Python, SQL
 
-## Methodology
+* Data Collection: SpaceX REST API, Web Scraping (BeautifulSoup)
 
-As with every data science project, I needed to collect as much relevant data as possible. My main data sources were SpaceX APIs for past launches (https//:api.spacexdata.com/v4/launches/past/) and web scraping using the Python library BeautifulSoup, looking at relevant Wikipedia pages. Additional APIs were also used for further information:
+* Data Wrangling & EDA: Pandas, NumPy, SQL Magic Commands
 
-1. getBoosterVersion: Rockets; URL: https//:api.spacexdata.com/v4/launches/rockets/
-2. getLaunchSite: Launchpads; URL: https//:api.spacexdata.com/v4/launches/launches/
-3. getPayloadData: Payloads; URL: url: https//:api.spacexdata.com/v4/launches/payloads/
-4. getCoreData: Core; URL: https//:api.spacexdata.com/v4/launches/cores/
+* Data Visualisation: Matplotlib, Seaborn, Folium (Interactive Maps), Plotly Dash (Interactive Dashboard)
 
-The next step after identifying relevant data sources was to parse the fetched API data (as JSON/HTML files) into data frames via the Python library Pandas. The original dataset also included Falcon 1 information, so I imputed missing values to prepare the dataset for analysis. Additionally, one of the headers obtained from data wrangling was named ‘Outcome’ with eight possible results. For simplicity, I mapped the outcomes to zero (failure) or one (success). I left other useful variables (launch pad usage, booster version, payload mass (kg), etc.) alone, as they were already in perfect condition for data manipulation. 
+* Machine Learning: Scikit-Learn (Logistic Regression, SVM, Decision Trees, KNN, GridSearchCV)
 
-The penultimate step before exploratory data analysis (EDA) was to understand the data via SQL magic commands in Jupyter Notebook. Analysing the data for imbalances and the underlying context to understand the task at hand (E.G., the baseline success rate of SpaceX launches and the rocket payload mass) was crucial to tell the right story. One query involved counting success versus failure outcomes, with the result showing a clear data imbalance. Recognising this early was critical in the machine learning phase, as relying on one accuracy score can be misleading. Instead, a confusion matrix is necessary to uncover the model’s true predictive performance (E.G., identifying false positives and false negatives).
+## Methodology & Workflow
+1. Data Collection & Wrangling
 
-Finally, prior to EDA, I was also tasked with creating an interactive map of SpaceX launch site locations in North America. These maps included markers, site labels, and the total number of launches per site. While this step failed to introduce new quantitative data, this information provides context to help uncover the project goal. The insights derived from these SQL queries and Folium maps set the stage for the deeper visual analysis in the next section.
+* Collected historical launch data using the SpaceX API and scraped Wikipedia tables via BeautifulSoup.
 
-## Exploratory Data Analysis
+* Handled missing values (imputed Payload Mass with the mean, kept LaunchPad nulls representing unused pads).
 
-## Interactive Visual Analytics & Dashboard
+* Mapped 8 different mission outcomes into a binary classification (Class: 0 = Failure, 1 = Success).
 
-## Predictive Analysis (Classification)
+* SQL Analysis: Used SQL magic commands to isolate target variables and identify data imbalances (e.g., 98 successes vs. 1 failure). Recognising this early indicated the need for a Confusion Matrix during ML evaluation, rather than relying solely on accuracy.
 
-## Discussion
+2. Exploratory Data Analysis (EDA) & Visual Analytics
 
-## Conclusion
+* Data Visualisation: Identified patterns across launch sites, payload mass, orbit types, and flight numbers. Success rates have significantly increased over time, particularly after 2013.
+
+* Geospatial Analysis (Folium): Created interactive maps to analyse launch site proximities. Discovered that optimal launch sites are strategically located near the coast (for safety) and the equator (for orbital mechanics).
+
+* Interactive Dashboard (Plotly Dash): Built a real-time dashboard with dropdowns and range sliders, allowing users to filter data by launch site, payload mass, and booster version.
+
+3. Predictive Analysis (Machine Learning)
+
+* Standardised the data using StandardScaler and split it into training and testing sets.
+
+* Trained and tuned four classification models using GridSearchCV (10-fold cross-validation).
+
+* Evaluated models using Accuracy Scores and Confusion Matrices.
+
+## Key Results & Findings
+1. Best Performing Model: The Decision Tree Classifier was selected as the optimal model. While all four models achieved a competitive 83.33% Test Accuracy, the Decision Tree outperformed the others in Cross-Validation Training Accuracy (86.07%).
+
+2. Launch Site Success: KSC LC-39A demonstrated the highest success rate among all launch sites.
+
+3. Key Predictors: Flight Number (experience over time), Launch Site, and Payload Mass were identified as the strongest features for predicting a successful landing.
+
+4. Model Evaluation: The confusion matrix revealed 3 False Positives and 0 False Negatives for the best model, indicating the model is highly reliable at predicting successful landings.
+
+## Repository Structure
+```
+data/                 							Jupyter Notebooks
+│   ├── 01_jupyter-labs-spacex-data-collection-api.ipynb
+│   ├── 02_jupyter-labs-webscraping.ipynb
+│   ├── 03_labs-jupyter-spacex-Data wrangling.ipynb
+│   ├── 04_jupyter-labs-eda-sql-coursera_sqllite.ipynb
+│   ├── 05_edadataviz.ipynb
+│   ├── 06_lab_jupyter_launch_site_location.ipynb
+│   └── 07_spacex-dash-app.py
+│   └── 08_SpaceX_Machine Learning Prediction_Part_5.ipynb
+├── presentation           						Final PDF presentation slides
+└── README.md
+```
+
+## How to Run
+Clone the repository:
+git clone https://github.com/yourusername/spacex-falcon9-prediction.git
+
+Install the required libraries:
+pip install -r requirements.txt
+
+Run the Jupyter Notebooks sequentially in the notebooks/ folder.
+
+To launch the dashboard, run: python 06_plotly_dash.py
